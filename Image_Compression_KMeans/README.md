@@ -1,5 +1,5 @@
 # Image Compression with KMeans
-I only implemented 'kmeans.py', other code are provided by course instructor.
+I only implemented 'kmeans.py', other code were provided by course instructor.
 ## Goal
 Compress images like below:
 ![compress image](https://backto1995.com/temp_img/bab.png)
