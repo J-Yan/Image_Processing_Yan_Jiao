@@ -78,7 +78,7 @@ int main(int argc, char *argv[])
 		BytesPerPixel = atoi(argv[4]);
 		// Check if size is specified
 		if (argc >= 6) {
-			SizeX = atoi(argv[5]);
+      SizeX = atoi(argv[5]);
 		}
 	}
 
