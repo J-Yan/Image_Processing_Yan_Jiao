@@ -2,7 +2,7 @@
 Three mainly morphological processing methods are:
 * Thinning
 * Shrinking
-* Skeletonizing  
+* Skeletonizing
 This repo only includes the skeletonizing process.
 The other two processing is similar to skeletonizing: only have to turn on the corresponding masks in the mask table.
 
