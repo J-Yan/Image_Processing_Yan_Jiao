@@ -13,6 +13,7 @@ Skeletonizing images like below:
 - Using C++
 - pattern*.raw -- test images
 - out*.raw -- skeletonized images
+
 Step 1:
 ```
 g++ -Wall -std=c++17 Skeletonize.cpp -o custom_name.o
