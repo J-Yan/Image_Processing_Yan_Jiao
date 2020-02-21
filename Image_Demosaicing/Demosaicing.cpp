@@ -1,4 +1,4 @@
-// Course project of USC EE 569 Digital Image Processing
+// course project of USC EE 569 Digital Image Processing
 // arrow mark pair "vvv" & "^^^": codes between these marks are code snippets from start code provided by course instructor
 // author (of codes outside arrow mark pair): Yan Jiao
 
