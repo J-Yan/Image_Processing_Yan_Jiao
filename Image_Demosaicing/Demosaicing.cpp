@@ -103,6 +103,8 @@ int main(int argc, char *argv[])
         // initial the final output data array
         unsigned char ImagedataOut[SizeX][SizeY][BytesPerPixel*3];
 
+
+
   /////////////////////////// Bilinear /////////////////////////////////////
         if (strcmp(argv[3], "bi") == 0) {
 
@@ -137,78 +139,81 @@ int main(int argc, char *argv[])
                         }
                 }
         }
+
+
+
   /////////////////////////// MHC /////////////////////////////////////
-  else if (strcmp(argv[3], "mhc") == 0) {
+        else if (strcmp(argv[3], "mhc") == 0) {
 
-  	// extend the image data array, 2px outer
-  	Extend(&Imagedata[0][0][0], &Temp[0][0][0], 2, SizeX, SizeY);
-  	// output image data array
-  	int red, green, blue;
-  	for (int i=2; i<=SizeX+1; i++) {
-      for (int j=2; j<=SizeY+1; j++) {
-          if ((i+j)%2 == 0) {  // already has green
-  					if ((i%2) == 0) {
-  						red = ((Temp[i][j-1][0] + Temp[i][j+1][0]) * 4 + Temp[i][j][0] * 5
-  																				- (Temp[i-1][j-1][0] + Temp[i-1][j+1][0] + Temp[i+1][j-1][0] + Temp[i+1][j+1][0] + Temp[i][j-2][0] + Temp[i][j+2][0])
-  																				+ (Temp[i-2][j][0] + Temp[i+2][j][0]) / 2) / 8;
-  	          green = Temp[i][j][0];
-  	          blue = ((Temp[i-1][j][0] + Temp[i+1][j][0]) * 4 +
-  																				Temp[i][j][0] * 5 - (Temp[i-1][j-1][0] + Temp[i-1][j+1][0] + Temp[i+1][j-1][0] + Temp[i+1][j+1][0] +
-  																				Temp[i-2][j][0] + Temp[i+2][j][0]) + (Temp[i][j-2][0] + Temp[i][j+2][0]) / 2) / 8;
-  					}
-            else {
-  						blue = ((Temp[i][j-1][0] + Temp[i][j+1][0]) * 4 +
-  																				Temp[i][j][0] * 5 - (Temp[i-1][j-1][0] + Temp[i-1][j+1][0] + Temp[i+1][j-1][0] + Temp[i+1][j+1][0] +
-  																				Temp[i][j-2][0] + Temp[i][j+2][0]) + (Temp[i-2][j][0] + Temp[i+2][j][0]) / 2) / 8;
-  	          green = Temp[i][j][0];
-  	          red = ((Temp[i-1][j][0] + Temp[i+1][j][0]) * 4 +
-  																				Temp[i][j][0] * 5 - (Temp[i-1][j-1][0] + Temp[i-1][j+1][0] + Temp[i+1][j-1][0] + Temp[i+1][j+1][0] +
-  																				Temp[i-2][j][0] + Temp[i+2][j][0]) + (Temp[i][j-2][0] + Temp[i][j+2][0]) / 2) / 8;
-  					}
-          }
-          else if (i%2 == 0) { // red
-            red = Temp[i][j][0];
-            green = ((Temp[i][j-1][0] + Temp[i][j+1][0] + Temp[i-1][j][0] + Temp[i+1][j][0]) * 2 +
-  																			Temp[i][j][0] * 4 - (Temp[i][j-2][0] + Temp[i][j+2][0] + Temp[i-2][j][0] + Temp[i+2][j][0])) / 8;
-            blue = ((Temp[i-1][j-1][0] + Temp[i+1][j+1][0] + Temp[i-1][j+1][0] + Temp[i+1][j-1][0]) * 2 +
-  																			Temp[i][j][0] * 6 - (Temp[i][j-2][0] + Temp[i][j+2][0] + Temp[i-2][j][0] + Temp[i+2][j][0]) * 3 / 2) / 8;
-          }
-          else { // blue
-            red = ((Temp[i-1][j-1][0] + Temp[i+1][j+1][0] + Temp[i-1][j+1][0] + Temp[i+1][j-1][0]) * 2 +
-  																			Temp[i][j][0] * 6 - (Temp[i][j-2][0] + Temp[i][j+2][0] + Temp[i-2][j][0] + Temp[i+2][j][0]) * 3 / 2) / 8;;
-            green = ((Temp[i][j-1][0] + Temp[i][j+1][0] + Temp[i-1][j][0] + Temp[i+1][j][0]) * 2 +
-  																			Temp[i][j][0] * 4 - (Temp[i][j-2][0] + Temp[i][j+2][0] + Temp[i-2][j][0] + Temp[i+2][j][0])) / 8;
-            blue = Temp[i][j][0];
-          }
+          	// extend the image data array, 2px outer
+          	Extend(&Imagedata[0][0][0], &Temp[0][0][0], 2, SizeX, SizeY);
 
-          // check for out bounded
-					if (red > 255) {
-						red = 255;
-					}
-					if (red < 0) {
-						red = 0;
-					}
-					if (green > 255) {
-						green = 255;
-					}
-					if (green < 0) {
-						green = 0;
-					}
-					if (blue > 255) {
-						blue = 255;
-					}
-					if (blue < 0) {
-						blue = 0;
-					}
-					ImagedataOut[i-2][j-2][0] = red;
-					ImagedataOut[i-2][j-2][1] = green;
-					ImagedataOut[i-2][j-2][2] = blue;
+          	// output image data array
+          	int red, green, blue;
+          	for (int i=2; i<=SizeX+1; i++) {
+                        for (int j=2; j<=SizeY+1; j++) {
+                                if ((i+j)%2 == 0) {  // already has green
+          				if ((i%2) == 0) {
+          					red = ((Temp[i][j-1][0] + Temp[i][j+1][0]) * 4 + Temp[i][j][0] * 5
+          					      - (Temp[i-1][j-1][0] + Temp[i-1][j+1][0] + Temp[i+1][j-1][0] + Temp[i+1][j+1][0] + Temp[i][j-2][0] + Temp[i][j+2][0])
+          					      + (Temp[i-2][j][0] + Temp[i+2][j][0]) / 2) / 8;
+          	                                green = Temp[i][j][0];
+          	                                blue = ((Temp[i-1][j][0] + Temp[i+1][j][0]) * 4
+                                                       + Temp[i][j][0] * 5 - (Temp[i-1][j-1][0] + Temp[i-1][j+1][0] + Temp[i+1][j-1][0] + Temp[i+1][j+1][0]
+                                                       + Temp[i-2][j][0] + Temp[i+2][j][0]) + (Temp[i][j-2][0] + Temp[i][j+2][0]) / 2) / 8;
+          				}
+                                        else {
+          					blue = ((Temp[i][j-1][0] + Temp[i][j+1][0]) * 4
+                                                       + Temp[i][j][0] * 5 - (Temp[i-1][j-1][0] + Temp[i-1][j+1][0] + Temp[i+1][j-1][0] + Temp[i+1][j+1][0]
+                                                       + Temp[i][j-2][0] + Temp[i][j+2][0]) + (Temp[i-2][j][0] + Temp[i+2][j][0]) / 2) / 8;
+          	                                green = Temp[i][j][0];
+          	                                red = ((Temp[i-1][j][0] + Temp[i+1][j][0]) * 4
+                                                      + Temp[i][j][0] * 5 - (Temp[i-1][j-1][0] + Temp[i-1][j+1][0] + Temp[i+1][j-1][0] + Temp[i+1][j+1][0]
+                                                      + Temp[i-2][j][0] + Temp[i+2][j][0]) + (Temp[i][j-2][0] + Temp[i][j+2][0]) / 2) / 8;
+          				}
+                                }
+                                else if (i%2 == 0) { // red
+                                        red = Temp[i][j][0];
+                                        green = ((Temp[i][j-1][0] + Temp[i][j+1][0] + Temp[i-1][j][0] + Temp[i+1][j][0]) * 2
+                                                + Temp[i][j][0] * 4 - (Temp[i][j-2][0] + Temp[i][j+2][0] + Temp[i-2][j][0] + Temp[i+2][j][0])) / 8;
+                                        blue = ((Temp[i-1][j-1][0] + Temp[i+1][j+1][0] + Temp[i-1][j+1][0] + Temp[i+1][j-1][0]) * 2
+                                                + Temp[i][j][0] * 6 - (Temp[i][j-2][0] + Temp[i][j+2][0] + Temp[i-2][j][0] + Temp[i+2][j][0]) * 3 / 2) / 8;
+                                }
+                                else { // blue
+                                        red = ((Temp[i-1][j-1][0] + Temp[i+1][j+1][0] + Temp[i-1][j+1][0] + Temp[i+1][j-1][0]) * 2
+                                              + Temp[i][j][0] * 6 - (Temp[i][j-2][0] + Temp[i][j+2][0] + Temp[i-2][j][0] + Temp[i+2][j][0]) * 3 / 2) / 8;;
+                                        green = ((Temp[i][j-1][0] + Temp[i][j+1][0] + Temp[i-1][j][0] + Temp[i+1][j][0]) * 2
+                                                + Temp[i][j][0] * 4 - (Temp[i][j-2][0] + Temp[i][j+2][0] + Temp[i-2][j][0] + Temp[i+2][j][0])) / 8;
+                                        blue = Temp[i][j][0];
+                                }
 
-      }
-    }
-  }
+                                // check for out bounded
+				if (red > 255) {
+					red = 255;
+				}
+				if (red < 0) {
+					red = 0;
+				}
+				if (green > 255) {
+					green = 255;
+				}
+				if (green < 0) {
+					green = 0;
+				}
+				if (blue > 255) {
+					blue = 255;
+				}
+				if (blue < 0) {
+					blue = 0;
+				}
+				ImagedataOut[i-2][j-2][0] = red;
+				ImagedataOut[i-2][j-2][1] = green;
+				ImagedataOut[i-2][j-2][2] = blue;
+                        }
+                }
+        }
 
-  // VVV
+        // VVV
 	// Write image data (filename specified by second argument) from image data matrix
 	if (!(file = fopen(argv[2], "wb"))) {
 		cout << "Cannot open file: " << argv[2] << endl;
@@ -216,7 +221,7 @@ int main(int argc, char *argv[])
 	}
 	fwrite(ImagedataOut, sizeof(unsigned char), SizeX*SizeY*BytesPerPixel*3, file);
 	fclose(file);
-  // ^^^
+        // ^^^
 
   return 0;
 }
