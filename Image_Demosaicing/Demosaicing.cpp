@@ -140,9 +140,9 @@ int main(int argc, char *argv[])
   /////////////////////////// MHC /////////////////////////////////////
   else if (strcmp(argv[3], "mhc") == 0) {
 
-  	/////////////// extend the image data array, 2px outer /////////////////////////
+  	// extend the image data array, 2px outer
   	Extend(&Imagedata[0][0][0], &Temp[0][0][0], 2, SizeX, SizeY);
-  	//output image data array
+  	// output image data array
   	int red, green, blue;
   	for (int i=2; i<=SizeX+1; i++) {
       for (int j=2; j<=SizeY+1; j++) {
