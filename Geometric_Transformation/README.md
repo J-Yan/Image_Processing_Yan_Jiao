@@ -1,7 +1,7 @@
 # Geometric Transformation
 ## Goal
 Put the image patches back into the original image:
-![lighthouse](https://backto1995.com/temp_img/lighthouse.png)
+![lighthouse](https://backto1995.com/temp_img/lighthouse1.png)
 ## How to run (MacOS Terminal):
 - Using C++
 - lighthouse*.raw -- rotated patches
