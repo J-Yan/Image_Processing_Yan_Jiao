@@ -1,7 +1,6 @@
-// Name: Yan Jiao
-// USC ID: 6419057887
-// USC Email: yanjiao@usc.edu
-// S
+// course project of USC EE 569 Digital Image Processing
+// file read and write code templates are originally from course instructor, I modified them to fit my goal
+// author (of other codes): Yan Jiao
 
 #include <stdio.h>
 #include <iostream>
@@ -16,7 +15,7 @@ static int Size = 375;
 // the value which represents black in the binary image
 static const unsigned char I = 255;
 
-// Digital Image Processing, 3rd Edition, Table 14.3-1, pp.413,414
+// Digital Image Processing, 4th Edition, Table 14.3-1, pp.433,434
 // Skeleton, Thin, and Skeletonize Conditional Mark Patterns [M = 1 if hit]
 static const unsigned char k_conditional_patterns[][9] = {
 // // S 1
@@ -247,9 +246,9 @@ I,I,I},
 
 };
 
-// Digital Image Processing, 3rd Edition, Table 14.3-I, p. 414
+// Digital Image Processing, 3th Edition, Table 14.3-2, p.435
 // Skeleton, Thin, and Skeletonize Unconditional Mark Patterns
-// P(M,M0,M1,M2,M3,M4,M5,M6,M7) = 1 if hit]
+// [P(M,M0,M1,M2,M3,M4,M5,M6,M7) = 1 if hit]
 // A ∪ B ∪ C = 1
 // A ∪ B = 1
 // D = 0 ∪ 1
@@ -276,6 +275,7 @@ M,0,0},
 {0,0,0,
 0,M,0,
 0,0,M},
+
 // Single 4-connection
 {0,0,0,
 0,M,0,
@@ -369,7 +369,7 @@ D,M,0}
 
 };
 
-
+// table for checking broken lines
 static const unsigned char E = 6;
 static const unsigned char F = 7;
 static const unsigned char G = 8;
@@ -406,11 +406,14 @@ int NumCond = sizeof(k_conditional_patterns)/sizeof(k_conditional_patterns[0]);
 int NumUnCond = sizeof(k_unconditional_patterns)/sizeof(k_unconditional_patterns[0]);
 int NumBridge = sizeof(k_bridge)/sizeof(k_bridge[0]);
 
+// loops of two skeleton stages
 vector<vector<unsigned char>> Skeleton(vector<vector<unsigned char>> IP) {
 	unsigned char StageOne[Size][Size];
 	unsigned char StageTwo[Size][Size];
 	int loopflag = 1;
 	while (loopflag == 1) {
+
+		// stage one
 		for (int i = 0; i < Size; i++) {
 			for (int j = 0; j < Size; j++){
 				StageOne[i][j] = 0;
@@ -447,12 +450,13 @@ vector<vector<unsigned char>> Skeleton(vector<vector<unsigned char>> IP) {
 			}
 		}
 
+		// stage two
 		for (int i = 0; i < Size; i++) {
 			for (int j = 0; j < Size; j++){
 				StageTwo[i][j] = StageOne[i][j];
 			}
 		}
-		// stage two
+
 		for (int i = 0; i < Size; i++) {
 			for (int j = 0; j < Size; j++){
 				if (StageOne[i][j] == M) {
@@ -495,7 +499,10 @@ vector<vector<unsigned char>> Skeleton(vector<vector<unsigned char>> IP) {
 				}
 			}
 		}
-	loopflag = 0;
+
+		// change the hit foreground pixels to background
+		// if no hit pixel, 'loopflag' should be '0'
+		loopflag = 0;
 		for (int i = 0; i < Size; i++) {
 			for (int j = 0; j < Size; j++){
 				if (StageOne[i][j] == M && StageTwo[i][j] == 0) {
@@ -505,95 +512,94 @@ vector<vector<unsigned char>> Skeleton(vector<vector<unsigned char>> IP) {
 			}
 		}
 	}
-return IP;
+	return IP;
 }
 
+
+// bridge function
+// check & connect the broken lines after the skeletonizing process
 vector<vector<unsigned char>> Bridge(vector<vector<unsigned char>> IP) {
-		unsigned char nine[9];
-		for (int i = 1; i < Size-1; i++) {
-			for (int j = 1; j < Size-1; j++){
-				if (IP[i][j] == 0 && (IP[i-1][j-1]==255|| IP[i-1][j]==255|| IP[i-1][j+1]==255|| IP[i][j-1]==255||IP[i][j+1]==255 ||IP[i+1][j-1]==255 || IP[i+1][j]==255|| IP[i+1][j+1]==255)) {
-					nine[0] = IP[i-1][j-1];
-					nine[1] = IP[i-1][j];
-					nine[2] = IP[i-1][j+1];
-					nine[3] = IP[i][j-1];
-					nine[4] = IP[i][j];
-					nine[5] = IP[i][j+1];
-					nine[6] = IP[i+1][j-1];
-					nine[7] = IP[i+1][j];
-					nine[8] = IP[i+1][j+1];
+	unsigned char nine[9];
+	for (int i = 1; i < Size-1; i++) {
+		for (int j = 1; j < Size-1; j++){
+			if (IP[i][j] == 0 && (IP[i-1][j-1]==255|| IP[i-1][j]==255|| IP[i-1][j+1]==255|| IP[i][j-1]==255||IP[i][j+1]==255 ||IP[i+1][j-1]==255 || IP[i+1][j]==255|| IP[i+1][j+1]==255)) {
+				nine[0] = IP[i-1][j-1];
+				nine[1] = IP[i-1][j];
+				nine[2] = IP[i-1][j+1];
+				nine[3] = IP[i][j-1];
+				nine[4] = IP[i][j];
+				nine[5] = IP[i][j+1];
+				nine[6] = IP[i+1][j-1];
+				nine[7] = IP[i+1][j];
+				nine[8] = IP[i+1][j+1];
 
-					unsigned char ABC;
-					unsigned char EFG;
-					unsigned char abc;
-					unsigned char efg;
-					unsigned char flag;
-					for (int k = 0; k < NumBridge; k++){
+				unsigned char ABC;
+				unsigned char EFG;
+				unsigned char abc;
+				unsigned char efg;
+				unsigned char flag;
+				for (int k = 0; k < NumBridge; k++){
 
-						ABC = 0;
-						abc = 0;
-						EFG = 0;
-						efg = 0;
-						flag = 1;
-						for (int m = 0; m < 9; m++) {
-							if (k_bridge[k][m] > 1 && k_bridge[k][m] < 5) {
-								ABC = 1;
-
-								if (nine[m] == 255) {
-									abc = 1;
-								}
-							}
-							else if (k_bridge[k][m] > 5) {
-								EFG = 1;
-								if (nine[m] == 255) {
-									efg = 1;
-								}
-							}
-							else if (k_bridge[k][m] < 2) {
-								if (k_bridge[k][m]*255 != nine[m]) {
-									flag = 0;
-								}
+					ABC = 0;
+					abc = 0;
+					EFG = 0;
+					efg = 0;
+					flag = 1;
+					for (int m = 0; m < 9; m++) {
+						if (k_bridge[k][m] > 1 && k_bridge[k][m] < 5) {
+							ABC = 1;
+							if (nine[m] == 255) {
+								abc = 1;
 							}
 						}
-						if (ABC==abc && flag == 1 && EFG==efg) {
-							if (EFG == 1) {
-								if (! ((nine[0]==255&&(nine[2]==255||nine[6]==255)) || (nine[8]==255&&(nine[6]==255||nine[2]==255)) )) {
-									IP[i][j] = 255;
-									break;
-								}
+						else if (k_bridge[k][m] > 5) {
+							EFG = 1;
+							if (nine[m] == 255) {
+								efg = 1;
 							}
-							else {
+						}
+						else if (k_bridge[k][m] < 2) {
+							if (k_bridge[k][m]*255 != nine[m]) {
+								flag = 0;
+							}
+						}
+					}
+					if (ABC==abc && flag == 1 && EFG==efg) {
+						if (EFG == 1) {
+							if (! ((nine[0]==255&&(nine[2]==255||nine[6]==255)) || (nine[8]==255&&(nine[6]==255||nine[2]==255)) )) {
 								IP[i][j] = 255;
 								break;
 							}
+						}
+						else {
+							IP[i][j] = 255;
+							break;
 						}
 					}
 				}
 			}
 		}
-return IP;
+	}
+	return IP;
 }
 
 int main(int argc, char *argv[])
 {
+	// vvv
 	// Define file pointer and variables
 	FILE *file;
 	int BytesPerPixel = 1;
+	// ^^^
 
 	// Check for proper syntax
-	if (argc < 3) {
+	if (argc < 9) {
 		cout << "Syntax Error - Incorrect Parameter Usage:" << endl;
-		cout << "program_name input_image.raw output_image.raw [BytesPerPixel = 1] [Size = 256]" << endl;
+		cout << "program_name input_image1.raw input_image2.raw input_image3.raw input_image4.raw output_image.raw output_imag2.raw output_image3.raw output_image4.raw [BytesPerPixel = 1] [Size = 256]" << endl;
 		return 0;
 	}
 
-	// Check if image is grayscale or color
-	if (argc < 4) {
-		BytesPerPixel = 1; // default is grey image
-	}
-
 	// Allocate image data array
-  unsigned char Image1[Size][Size][BytesPerPixel];
+  	unsigned char Image1[Size][Size][BytesPerPixel];
 	unsigned char Image2[Size][Size][BytesPerPixel];
 	unsigned char Image3[Size][Size][BytesPerPixel];
 	unsigned char Image4[Size][Size][BytesPerPixel];
@@ -623,7 +629,6 @@ int main(int argc, char *argv[])
 	}
 	fread(Image4, sizeof(unsigned char), Size*Size*BytesPerPixel, file);
 	fclose(file);
-	///////////////////////// INSERT YOUR PROCESSING CODE HERE /////////////////////////
 
 	unsigned char ImageOut1[Size][Size][BytesPerPixel];
 	unsigned char ImageOut2[Size][Size][BytesPerPixel];
@@ -659,11 +664,8 @@ int main(int argc, char *argv[])
 			I4[i][j] = Image4[i][j][0];
 		}
 	}
-	// I1O = Skeleton(I1);
-	// I2O = Skeleton(I2);
-	// I3O = Skeleton(I3);
-	// I4O = Skeleton(I4);
 
+	// skeletonize & bridge the image
 	I1O = Bridge(Skeleton(I1));
 	I2O = Bridge(Skeleton(I2));
 	I3O = Bridge(Skeleton(I3));
@@ -714,5 +716,5 @@ int main(int argc, char *argv[])
 	fwrite(ImageOut4, sizeof(unsigned char), Size*Size*BytesPerPixel, file);
 	fclose(file);
 
-    return 0;
+    	return 0;
 }
