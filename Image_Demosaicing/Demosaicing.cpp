@@ -52,18 +52,18 @@ void Extend(unsigned char *in, unsigned char *out, int extNum, int row, int col)
 
 int main(int argc, char *argv[])
 {
-  // vvv
+        // vvv
 	// Define file pointer and variables
 	FILE *file;
 	int BytesPerPixel = 1;
-  // ^^^
+        // ^^^
 	int SizeX = 300;
 	int SizeY = 390;
-  int padding_num = 2;
+        int padding_num = 2;
 
 	// Check for proper syntax
-  // method_name: bi -- bilinear
-  //              mhc -- Malvar-He-Cutler
+        // method_name: bi -- bilinear
+        //              mhc -- Malvar-He-Cutler
 	if (argc < 4) {
 		cout << "Syntax Error - Incorrect Parameter Usage:" << endl;
 		cout << "program_name input_img.raw output_img.raw method_name [BytesPerPixel = 1] [Size = 256]" << endl;
@@ -78,13 +78,13 @@ int main(int argc, char *argv[])
 		BytesPerPixel = atoi(argv[4]);
 		// Check if size is specified
 		if (argc >= 6) {
-      SizeX = atoi(argv[5]);
+                        SizeX = atoi(argv[5]);
 		}
 	}
 
-  // vvv
+        // vvv
 	// Allocate image data array
-  unsigned char Imagedata[SizeX][SizeY][BytesPerPixel];
+        unsigned char Imagedata[SizeX][SizeY][BytesPerPixel];
 	// Read image (filename specified by first argument) into image data matrix
 	if (!(file = fopen(argv[1], "rb"))) {
 		cout << "Cannot open file: " << argv[1] << endl;
@@ -92,51 +92,51 @@ int main(int argc, char *argv[])
 	}
 	fread(Imagedata, sizeof(unsigned char), SizeX*SizeY*BytesPerPixel, file);
 	fclose(file);
-  // ^^^
+        // ^^^
 
-  if (strcmp(argv[3], "mhc") == 0) {
-    padding_num = 4;
-  }
+        if (strcmp(argv[3], "mhc") == 0) {
+                padding_num = 4;
+        }
 
-  // initial the after padding data array
-  unsigned char Temp[SizeX+padding_num][SizeY+padding_num][BytesPerPixel];
-  // initial the final output data array
-  unsigned char ImagedataOut[SizeX][SizeY][BytesPerPixel*3];
+        // initial the after padding data array
+        unsigned char Temp[SizeX+padding_num][SizeY+padding_num][BytesPerPixel];
+        // initial the final output data array
+        unsigned char ImagedataOut[SizeX][SizeY][BytesPerPixel*3];
 
   /////////////////////////// Bilinear /////////////////////////////////////
-  if (strcmp(argv[3], "bi") == 0) {
+        if (strcmp(argv[3], "bi") == 0) {
 
-    // extend the image data array, 1px outer
-    Extend(&Imagedata[0][0][0], &Temp[0][0][0], 1, SizeX, SizeY);
+                // extend the image data array, 1px outer
+                Extend(&Imagedata[0][0][0], &Temp[0][0][0], 1, SizeX, SizeY);
 
-  	// output image data array, traverse the padded data
-  	for (int i=1; i<=SizeX; i++) {
-      for (int j=1; j<=SizeY; j++) {
-          if ((i+j)%2 == 0) {  // already has green
-  					if (i%2 == 1) {
-  						ImagedataOut[i-1][j-1][0] = (Temp[i][j-1][0] + Temp[i][j+1][0]) / 2;
-  						ImagedataOut[i-1][j-1][1] = Temp[i][j][0];
-  						ImagedataOut[i-1][j-1][2] = (Temp[i-1][j][0] + Temp[i+1][j][0]) / 2;
-  					}
-          	else {
-  						ImagedataOut[i-1][j-1][2] = (Temp[i][j-1][0] + Temp[i][j+1][0]) / 2;
-  						ImagedataOut[i-1][j-1][1] = Temp[i][j][0];
-  						ImagedataOut[i-1][j-1][0] = (Temp[i-1][j][0] + Temp[i+1][j][0]) / 2;
-  					}
-          }
-          else if (i%2 == 1) { // red
-            ImagedataOut[i-1][j-1][0] = Temp[i][j][0];
-            ImagedataOut[i-1][j-1][1] = (Temp[i][j-1][0] + Temp[i][j+1][0] + Temp[i-1][j][0] + Temp[i+1][j][0]) / 4;
-            ImagedataOut[i-1][j-1][2] = (Temp[i-1][j-1][0] + Temp[i+1][j+1][0] + Temp[i-1][j+1][0] + Temp[i+1][j-1][0]) / 4;
-          }
-          else { // blue
-            ImagedataOut[i-1][j-1][0] = (Temp[i-1][j-1][0] + Temp[i+1][j+1][0] + Temp[i-1][j+1][0] + Temp[i+1][j-1][0]) / 4;
-            ImagedataOut[i-1][j-1][1] = (Temp[i-1][j][0] + Temp[i+1][j][0] + Temp[i][j-1][0] + Temp[i][j+1][0]) / 4;
-            ImagedataOut[i-1][j-1][2] = Temp[i][j][0];
-          }
-      }
-    }
-  }
+          	// output image data array, traverse the padded data
+          	for (int i=1; i<=SizeX; i++) {
+                        for (int j=1; j<=SizeY; j++) {
+                                if ((i+j)%2 == 0) {  // already has green
+          				if (i%2 == 1) {
+          					ImagedataOut[i-1][j-1][0] = (Temp[i][j-1][0] + Temp[i][j+1][0]) / 2;
+          					ImagedataOut[i-1][j-1][1] = Temp[i][j][0];
+          					ImagedataOut[i-1][j-1][2] = (Temp[i-1][j][0] + Temp[i+1][j][0]) / 2;
+          				}
+                  	                else {
+          					ImagedataOut[i-1][j-1][2] = (Temp[i][j-1][0] + Temp[i][j+1][0]) / 2;
+          					ImagedataOut[i-1][j-1][1] = Temp[i][j][0];
+          					ImagedataOut[i-1][j-1][0] = (Temp[i-1][j][0] + Temp[i+1][j][0]) / 2;
+          				}
+                                }
+                                else if (i%2 == 1) { // red
+                                        ImagedataOut[i-1][j-1][0] = Temp[i][j][0];
+                                        ImagedataOut[i-1][j-1][1] = (Temp[i][j-1][0] + Temp[i][j+1][0] + Temp[i-1][j][0] + Temp[i+1][j][0]) / 4;
+                                        ImagedataOut[i-1][j-1][2] = (Temp[i-1][j-1][0] + Temp[i+1][j+1][0] + Temp[i-1][j+1][0] + Temp[i+1][j-1][0]) / 4;
+                                }
+                                else { // blue
+                                        ImagedataOut[i-1][j-1][0] = (Temp[i-1][j-1][0] + Temp[i+1][j+1][0] + Temp[i-1][j+1][0] + Temp[i+1][j-1][0]) / 4;
+                                        ImagedataOut[i-1][j-1][1] = (Temp[i-1][j][0] + Temp[i+1][j][0] + Temp[i][j-1][0] + Temp[i][j+1][0]) / 4;
+                                        ImagedataOut[i-1][j-1][2] = Temp[i][j][0];
+                                }
+                        }
+                }
+        }
   /////////////////////////// MHC /////////////////////////////////////
   else if (strcmp(argv[3], "mhc") == 0) {
 
