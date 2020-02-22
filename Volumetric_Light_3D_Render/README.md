@@ -1,10 +1,12 @@
 # Volumetric Light Simulation
 This project is a team project.
+
 I mainly implemented the shader part.
 
 ## Main idea
-We implemented two methods: radial blur and ray-tracing
-The final effect can be found at [backto1995.com/JIAO_YAN](https://backto1995.com/JIAO_YAN/)
+We implemented two methods: radial blur and ray-tracing.
+
+The final effect can be found at [backto1995.com/JIAO_YAN](https://backto1995.com/JIAO_YAN/).
 
 ###### Radial blur
 - Capture the real time frame to frame buffer
