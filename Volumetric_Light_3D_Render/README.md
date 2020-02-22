@@ -6,7 +6,7 @@ I mainly implemented the shader part.
 ## Main idea
 We implemented two methods: radial blur and ray-tracing.
 
-The final effect can be found at [backto1995.com/JIAO_YAN](https://backto1995.com/JIAO_YAN/).
+The final effect can be found at [backto1995.com/JIAO_YAN](https://backto1995.com/JIAO_YAN/), in section "OpenGL Volumetric Lighting Simulation".
 
 ###### Radial blur
 - Capture the real time frame to frame buffer
